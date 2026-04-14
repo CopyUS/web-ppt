@@ -1,0 +1,136 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/vDevPreview/MicrosoftTeams.schema.json",
+  "manifestVersion": "devPreview",
+  "version": "1.0.0",
+  "id": "3d9e2f47-c8b5-4a1d-9e6f-8b2c5d7a3e90",
+  "packageName": "com.Web.PPT.addin",
+  "name": {
+    "short": "Web.PPT",
+    "full": "Web.PPT - web pages in PowerPoint FREE"
+  },
+  "description": {
+    "short": "Web.PPT",
+    "full": "Web.PPT - web pages in PowerPoint FREE"
+  },
+  "developer": {
+    "name": "CopyUS",
+    "websiteUrl": "https://github.com/CopyUS",
+    "privacyUrl": "https://github.com/CopyUS",
+    "termsOfUseUrl": "https://github.com/CopyUS"
+  },
+  "icons": {
+    "outline": "assets/icon-32.png",
+    "color": "assets/icon-80.png"
+  },
+  "accentColor": "#4B7BEC",
+  "localizationInfo": {
+    "defaultLocale": "en-us"
+  },
+  "authorization": {
+    "permissions": {
+      "resourceSpecific": []
+    }
+  },
+  "validDomains": [
+    "localhost"
+  ],
+  "extensions": [
+    {
+      "requirements": {
+        "scopes": ["presentation"],
+        "capabilities": [
+          {
+            "name": "AddinCommands",
+            "minVersion": "1.1"
+          }
+        ]
+      },
+      "runtimes": [
+        {
+          "id": "TaskPaneRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://localhost:4008/taskpane.html"
+          },
+          "lifetime": "short",
+          "actions": [
+            {
+              "id": "OpenTaskPane",
+              "type": "openPage",
+              "pinnable": false,
+              "view": "TaskPaneView"
+            }
+          ]
+        },
+        {
+          "id": "CommandsRuntime",
+          "type": "general",
+          "code": {
+            "page": "https://localhost:4008/commands.html"
+          },
+          "lifetime": "long",
+          "actions": [
+            {
+              "id": "ShowWebPage",
+              "type": "executeFunction",
+              "displayName": "Show Web Page"
+            }
+          ]
+        }
+      ],
+      "ribbons": [
+        {
+          "contexts": ["default"],
+          "tabs": [
+            {
+              "builtInTabId": "TabInsert",
+              "groups": [
+                {
+                  "id": "Web.PPTGroup",
+                  "label": "Web.PPT",
+                  "icons": [
+                    { "size": 16, "url": "https://localhost:4008/assets/icon-16.png" },
+                    { "size": 32, "url": "https://localhost:4008/assets/icon-32.png" },
+                    { "size": 80, "url": "https://localhost:4008/assets/icon-80.png" }
+                  ],
+                  "controls": [
+                    {
+                      "id": "InsertWebPageButton",
+                      "type": "button",
+                      "label": "Add WebPage.PPT",
+                      "icons": [
+                        { "size": 16, "url": "https://localhost:4008/assets/icon-16.png" },
+                        { "size": 32, "url": "https://localhost:4008/assets/icon-32.png" },
+                        { "size": 80, "url": "https://localhost:4008/assets/icon-80.png" }
+                      ],
+                      "supertip": {
+                        "title": "Add WebPage.PPT",
+                        "description": "Open the Web.PPT panel to set a URL for the current slide."
+                      },
+                      "actionId": "OpenTaskPane"
+                    },
+                    {
+                      "id": "ShowWebPageButton",
+                      "type": "button",
+                      "label": "Show WebPage.PPT",
+                      "icons": [
+                        { "size": 16, "url": "https://localhost:4008/assets/icon-16.png" },
+                        { "size": 32, "url": "https://localhost:4008/assets/icon-32.png" },
+                        { "size": 80, "url": "https://localhost:4008/assets/icon-80.png" }
+                      ],
+                      "supertip": {
+                        "title": "Show Web Page",
+                        "description": "Open the configured web page for the current slide in a browser window. Set up the URL first using the Add WebPage.PPT button."
+                      },
+                      "actionId": "ShowWebPage"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "web-ppt-addin",
+  "version": "1.0.0",
+  "description": "Web.PPT - web pages in PowerPoint FREE",
+  "license": "MIT",
+  "author": {
+    "name": "CopyUS",
+    "url": "https://github.com/CopyUS"
+  },
+  "scripts": {
+    "dev-server": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "start": "office-addin-debugging start manifest.json",
+    "start:desktop": "office-addin-debugging start manifest.json desktop",
+    "stop": "office-addin-debugging stop manifest.json",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src",
+    "validate": "office-addin-manifest validate manifest.json",
+    "install-certs": "office-addin-dev-certs install"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/office-js": "^1.0.403",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "canvas": "^3.2.3",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "eslint": "^9.7.0",
+    "gh-pages": "^6.3.0",
+    "html-webpack-plugin": "^5.6.3",
+    "jest": "^29.7.0",
+    "mini-css-extract-plugin": "^2.9.1",
+    "office-addin-debugging": "^5.0.0",
+    "office-addin-dev-certs": "^1.0.0",
+    "office-addin-manifest": "^1.0.0",
+    "ts-jest": "^29.2.4",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.5.4",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  }
+}

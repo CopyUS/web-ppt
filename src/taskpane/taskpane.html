@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>Web.PPT</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icon-16.png" />
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  </head>
+  <body>
+    <div id="app">
+
+      <!-- ── Header ──────────────────────────────────────────────────────── -->
+      <header class="header">
+        <div class="header-brand">
+          <svg class="header-logo" width="20" height="20" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10
+                     15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+          </svg>
+          <span class="header-title">Web.PPT</span>
+        </div>
+        <select id="lang-select" class="lang-select" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="es">Español</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="it">Italiano</option>
+          <option value="ar">العربية</option>
+          <option value="pt">Português</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ru">Русский</option>
+        </select>
+      </header>
+
+      <!-- ── Slide indicator ─────────────────────────────────────────────── -->
+      <div class="slide-indicator">
+        <span data-i18n="slideLabel">Slide</span>
+        <span id="slide-number">—</span>
+      </div>
+
+      <!-- ── URL input section ───────────────────────────────────────────── -->
+      <div class="section">
+        <label for="url-input" class="label" data-i18n="enterUrl">Enter URL</label>
+        <div class="input-row">
+          <input
+            id="url-input"
+            type="url"
+            class="text-input"
+            data-i18n-placeholder="urlPlaceholder"
+            placeholder="https://example.com"
+            autocomplete="url"
+            spellcheck="false"
+          />
+        </div>
+      </div>
+
+      <!-- ── Window size section ──────────────────────────────────────────── -->
+      <div class="section">
+        <label class="label" data-i18n="dialogSize">Window size</label>
+        <div class="size-controls">
+          <div class="size-sliders">
+            <div class="slider-row">
+              <span class="slider-label" data-i18n="dialogWidth">Width</span>
+              <input id="slider-width" type="range" class="range-input" min="30" max="100" value="80" />
+              <span id="slider-width-value" class="slider-value">80%</span>
+            </div>
+            <div class="slider-row">
+              <span class="slider-label" data-i18n="dialogHeight">Height</span>
+              <input id="slider-height" type="range" class="range-input" min="30" max="100" value="80" />
+              <span id="slider-height-value" class="slider-value">80%</span>
+            </div>
+            <label class="size-lock-label">
+              <input id="chk-lock-size" type="checkbox" class="checkbox-input" checked />
+              <svg class="size-lock-icon" width="14" height="14" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path class="lock-shackle" d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <span data-i18n="lockSize">Lock proportions</span>
+            </label>
+          </div>
+          <div class="size-preview" aria-hidden="true">
+            <div id="size-preview-inner" class="size-preview-inner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Zoom section ──────────────────────────────────────────────────── -->
+      <div class="section">
+        <label class="label" data-i18n="zoom">Zoom</label>
+        <div class="slider-row">
+          <input id="slider-zoom" type="range" class="range-input" min="50" max="300" value="100" />
+          <span id="slider-zoom-value" class="slider-value">100%</span>
+        </div>
+        <div class="zoom-presets">
+          <button type="button" class="btn-preset" data-zoom="50">50%</button>
+          <button type="button" class="btn-preset" data-zoom="75">75%</button>
+          <button type="button" class="btn-preset btn-preset--active" data-zoom="100">100%</button>
+          <button type="button" class="btn-preset" data-zoom="150">150%</button>
+          <button type="button" class="btn-preset" data-zoom="200">200%</button>
+          <button type="button" class="btn-preset" data-zoom="300">300%</button>
+        </div>
+      </div>
+
+      <!-- ── Auto-open checkbox ────────────────────────────────────────────── -->
+      <div class="section">
+        <div class="label-row">
+          <label class="checkbox-label">
+            <input id="chk-auto-open" type="checkbox" class="checkbox-input" />
+            <span data-i18n="autoOpen">Auto-open on slide change</span>
+          </label>
+          <button id="btn-autoopen-info" class="btn-info" type="button" aria-expanded="false" aria-controls="autoopen-hint" data-i18n-title="infoTooltip" title="Info">?</button>
+        </div>
+        <div id="autoopen-hint" class="hint-block" hidden>
+          <p data-i18n="autoOpenHint"></p>
+        </div>
+      </div>
+
+      <!-- ── Auto-close timer ─────────────────────────────────────────────── -->
+      <div class="section">
+        <div class="label-row">
+          <label class="label" data-i18n="autoClose">Auto-close after</label>
+          <button id="btn-autoclose-info" class="btn-info" type="button" aria-expanded="false" aria-controls="autoclose-hint" data-i18n-title="infoTooltip" title="Info">?</button>
+        </div>
+        <div id="autoclose-hint" class="hint-block" hidden>
+          <p data-i18n="autoCloseHint"></p>
+        </div>
+        <div class="slider-row">
+          <input id="slider-autoclose" type="range" class="range-input" min="0" max="47" value="0" />
+          <span id="slider-autoclose-value" class="slider-value" data-i18n="autoCloseOff">Off</span>
+        </div>
+      </div>
+
+      <!-- ── Apply + Set as defaults ───────────────────────────────────────── -->
+      <div class="section">
+        <button id="btn-apply" class="btn-primary" data-i18n="apply">Apply</button>
+        <button id="btn-defaults" class="btn-tertiary" data-i18n="setAsDefaults">Set as defaults</button>
+      </div>
+
+      <!-- ── Status message ──────────────────────────────────────────────── -->
+      <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+
+      <!-- ── Show Web Page button ────────────────────────────────────────── -->
+      <div class="section section-show">
+        <button id="btn-show" class="btn-secondary-action" data-i18n="showWebPage">
+          Show Web Page
+        </button>
+        <!-- Viewer status indicator (hidden until dialog opens) -->
+        <div id="viewer-status" class="viewer-status" hidden aria-live="polite">
+          <span id="viewer-status-icon" class="viewer-status-icon" aria-hidden="true"></span>
+          <span id="viewer-status-text" class="viewer-status-text"></span>
+        </div>
+      </div>
+
+      <!-- ── Guide link ──────────────────────────────────────────────────── -->
+      <div class="section">
+        <button id="btn-guide-toggle" class="btn-link" data-i18n="siteNotLoading"
+                aria-expanded="false" aria-controls="guide-section">
+          Site not loading?
+        </button>
+      </div>
+
+      <!-- ── Own-site guide (collapsed) ────────────────────────────────────── -->
+      <div id="guide-section" class="guide" hidden>
+
+        <h2 class="guide-heading" data-i18n="guideTitle">How to allow embedding</h2>
+
+        <!-- Option 1: Image link -->
+        <h3 class="guide-option-title" data-i18n="guideImageTitle">Option 1: Link to an image</h3>
+        <p class="guide-option-desc" data-i18n="guideImageDesc">
+          If your site can export content as an image (.png, .jpg, .webp, .gif, .svg),
+          paste the direct URL to the image file. No server changes needed.
+        </p>
+
+        <hr class="guide-divider" />
+
+        <!-- Option 2: Server config -->
+        <h3 class="guide-option-title" data-i18n="guideServerTitle">Option 2: Allow iframe embedding</h3>
+        <p class="guide-intro" data-i18n="guideIntro">
+          Add one of these snippets to the server that hosts the linked page:
+        </p>
+
+        <!-- Tabs -->
+        <div class="guide-tabs" role="tablist">
+          <button id="tp-tab-nginx" class="guide-tab guide-tab--active" role="tab" aria-selected="true"
+                  tabindex="0" aria-controls="tp-panel-nginx" data-guide-tab="nginx">Nginx</button>
+          <button id="tp-tab-apache" class="guide-tab" role="tab" aria-selected="false"
+                  tabindex="-1" aria-controls="tp-panel-apache" data-guide-tab="apache">Apache</button>
+          <button id="tp-tab-express" class="guide-tab" role="tab" aria-selected="false"
+                  tabindex="-1" aria-controls="tp-panel-express" data-guide-tab="express">Express.js</button>
+          <button id="tp-tab-meta" class="guide-tab" role="tab" aria-selected="false"
+                  tabindex="-1" aria-controls="tp-panel-meta" data-guide-tab="meta">HTML meta</button>
+        </div>
+
+        <!-- Code panels -->
+        <div id="tp-panel-nginx" class="guide-code-panel" role="tabpanel" aria-labelledby="tp-tab-nginx" data-guide-panel="nginx">
+          <pre class="guide-code"><code>add_header Content-Security-Policy "frame-ancestors *";</code></pre>
+          <button class="btn-copy" data-copy-snippet="nginx" data-i18n="copy">Copy</button>
+        </div>
+
+        <div id="tp-panel-apache" class="guide-code-panel" role="tabpanel" aria-labelledby="tp-tab-apache" data-guide-panel="apache" hidden>
+          <pre class="guide-code"><code>Header set Content-Security-Policy "frame-ancestors *"
+Header unset X-Frame-Options</code></pre>
+          <button class="btn-copy" data-copy-snippet="apache" data-i18n="copy">Copy</button>
+        </div>
+
+        <div id="tp-panel-express" class="guide-code-panel" role="tabpanel" aria-labelledby="tp-tab-express" data-guide-panel="express" hidden>
+          <pre class="guide-code"><code>app.use((req, res, next) =&gt; {
+  res.setHeader('Content-Security-Policy', 'frame-ancestors *');
+  res.removeHeader('X-Frame-Options');
+  next();
+});</code></pre>
+          <button class="btn-copy" data-copy-snippet="express" data-i18n="copy">Copy</button>
+        </div>
+
+        <div id="tp-panel-meta" class="guide-code-panel" role="tabpanel" aria-labelledby="tp-tab-meta" data-guide-panel="meta" hidden>
+          <pre class="guide-code"><code>&lt;meta http-equiv="Content-Security-Policy"
+      content="frame-ancestors *"&gt;</code></pre>
+          <button class="btn-copy" data-copy-snippet="meta" data-i18n="copy">Copy</button>
+          <p class="guide-meta-note" data-i18n="guideMetaNote">
+            Note: frame-ancestors in a meta tag may be ignored if the server already sets X-Frame-Options headers.
+          </p>
+        </div>
+
+        <p class="guide-note" data-i18n="guideNote">
+          Restart your server and reload the slide after making changes.
+        </p>
+
+        <!-- FAQ -->
+        <h3 class="guide-faq-title" data-i18n="guideFaqTitle">FAQ</h3>
+
+        <details class="faq-item">
+          <summary data-i18n="guideFaqXFrameQ">What is X-Frame-Options?</summary>
+          <p data-i18n="guideFaqXFrameA">An HTTP header that controls whether your site can be shown inside an iframe.</p>
+        </details>
+
+        <details class="faq-item">
+          <summary data-i18n="guideFaqUnknownServerQ">I don't know which server I have</summary>
+          <p data-i18n="guideFaqUnknownServerA">Check your project files: nginx.conf, .htaccess, app.js...</p>
+        </details>
+
+        <details class="faq-item">
+          <summary data-i18n="guideFaqNoAccessQ">I don't have server access</summary>
+          <p data-i18n="guideFaqNoAccessA">Use the "Open directly" button in the viewer.</p>
+        </details>
+
+      </div>
+
+      <!-- ── Footer ──────────────────────────────────────────────────────── -->
+      <footer class="footer">
+        <span class="footer-version">v1.0.0</span>
+        <a
+          id="footer-help"
+          href="https://github.com/CopyUS"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-link"
+          data-i18n="help"
+        >Help</a>
+      </footer>
+
+    </div>
+  </body>
+</html>
