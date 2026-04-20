@@ -204,14 +204,22 @@ installUnhandledRejectionHandler();
 Office.onReady(() => {
   logDebug('Commands runtime ready');
 
-  // Associate action IDs declared in manifest with handler functions.
-  // "ShowWebPage" matches the executeFunction action in the unified JSON manifest.
-  Office.actions.associate('ShowWebPage', showWebPage);
-
-  // Also expose as global for XML manifest compatibility.
-  // XML manifest uses <FunctionName>showWebPage</FunctionName> which looks up
-  // the function on the global scope if Office.actions.associate doesn't match.
+  // Expose the command function on the global scope FIRST.
+  // XML manifest looks up <FunctionName>showWebPage</FunctionName> on the global scope.
+  // This must happen before anything that could throw.
   (globalThis as Record<string, unknown>).showWebPage = showWebPage;
+
+  // For unified JSON manifest: associate action IDs with handler functions.
+  // Office.actions may not exist in XML-manifest FunctionFile runtimes,
+  // so this MUST be wrapped in try/catch to avoid crashing the entire bootstrap.
+  try {
+    if (Office.actions && typeof Office.actions.associate === 'function') {
+      Office.actions.associate('ShowWebPage', showWebPage);
+      logDebug('Office.actions.associate registered');
+    }
+  } catch {
+    logDebug('Office.actions.associate not available (XML manifest mode)');
+  }
 
   // Listen for view changes (edit ↔ slideshow).
   // LIMITATION: PowerPoint Online treats Slideshow as a new session,
