@@ -1,7 +1,7 @@
 import { i18n, type Locale, type TranslationKey } from '../shared/i18n';
 import { getSlideConfig, setSlideConfig, getLanguage, setLanguage, getDefaults, setDefaults } from '../shared/settings';
 import { DialogLauncher, DialogError } from '../shared/dialog-launcher';
-import { logError, installUnhandledRejectionHandler } from '../shared/logger';
+import { logDebug, logError, installUnhandledRejectionHandler } from '../shared/logger';
 import { AUTO_CLOSE_STEPS, truncateUrl } from '../shared/constants';
 
 // ─── DOM references ──────────────────────────────────────────────────────────
@@ -587,6 +587,164 @@ function handleUrlKeydown(e: KeyboardEvent): void {
   }
 }
 
+// ─── Slideshow auto-open ────────────────────────────────────────────────────
+//
+// The commands runtime (FunctionFile) may not persist during slideshow on all
+// PowerPoint versions. As a reliable fallback, the taskpane itself polls for
+// view mode changes and slide navigation during slideshow.
+//
+// Uses getActiveViewAsync() instead of ActiveViewChanged event because
+// the event may not fire in the taskpane context.
+
+/** How often to check the current view mode (ms). */
+const VIEW_POLL_INTERVAL_MS = 2000;
+
+/** How often to check the current slide during slideshow (ms). */
+const SLIDE_POLL_INTERVAL_MS = 1500;
+
+let viewPollTimer: ReturnType<typeof setInterval> | null = null;
+let slidePollTimer: ReturnType<typeof setInterval> | null = null;
+let slideshowActive = false;
+let lastSlideshowSlideId: string | null = null;
+let slidePollBusy = false;
+
+/** Get the current view mode ("edit" or "read"). */
+function getActiveView(): Promise<string> {
+  return new Promise((resolve) => {
+    try {
+      Office.context.document.getActiveViewAsync((result) => {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+          resolve(result.value as unknown as string);
+        } else {
+          resolve('edit');
+        }
+      });
+    } catch {
+      resolve('edit');
+    }
+  });
+}
+
+/** Get slide ID using a lightweight call (no index lookup needed here). */
+async function getSlideshowSlideId(): Promise<string | null> {
+  try {
+    let slideId: string | null = null;
+    await PowerPoint.run(async (context) => {
+      const slides = context.presentation.getSelectedSlides();
+      slides.load('items/id');
+      await context.sync();
+      if (slides.items.length > 0) {
+        slideId = slides.items[0].id;
+      }
+    });
+    return slideId;
+  } catch {
+    return null;
+  }
+}
+
+/** Open the viewer for a slide (slideshow auto-open). */
+async function autoOpenViewerForSlide(slideId: string): Promise<void> {
+  const config = getSlideConfig(slideId);
+  if (!config?.url || !config.autoOpen) return;
+
+  // Don't open if already showing (avoids flicker on repeated polls)
+  if (launcher.isOpen()) {
+    launcher.close();
+  }
+
+  try {
+    await launcher.open({
+      url: config.url,
+      zoom: config.zoom,
+      width: config.dialogWidth,
+      height: config.dialogHeight,
+      lang: i18n.getLocale(),
+      autoCloseSec: config.autoCloseSec,
+    });
+  } catch {
+    // Dialog may fail if commands runtime already opened one — that's OK
+  }
+}
+
+/** Poll slide changes during slideshow. */
+async function pollSlideInSlideshow(): Promise<void> {
+  if (!slideshowActive || slidePollBusy) return;
+
+  slidePollBusy = true;
+  try {
+    const slideId = await getSlideshowSlideId();
+    if (!slideId || slideId === lastSlideshowSlideId) return;
+
+    logDebug('[Taskpane] Slideshow slide changed:', lastSlideshowSlideId, '→', slideId);
+    lastSlideshowSlideId = slideId;
+
+    const config = getSlideConfig(slideId);
+    if (config?.autoOpen && config.url) {
+      await autoOpenViewerForSlide(slideId);
+    } else {
+      launcher.close();
+    }
+  } catch (err) {
+    logError('[Taskpane] Slide poll error:', err);
+  } finally {
+    slidePollBusy = false;
+  }
+}
+
+/** Called when slideshow mode is detected. */
+async function onSlideshowEnter(): Promise<void> {
+  slideshowActive = true;
+  lastSlideshowSlideId = null;
+  slidePollBusy = false;
+  logDebug('[Taskpane] Slideshow detected — starting slide polling');
+
+  // Immediately open viewer for the current slide
+  const slideId = await getSlideshowSlideId();
+  if (slideId) {
+    lastSlideshowSlideId = slideId;
+    const config = getSlideConfig(slideId);
+    if (config?.autoOpen && config.url) {
+      await autoOpenViewerForSlide(slideId);
+    }
+  }
+
+  // Start polling for slide changes
+  if (slidePollTimer) clearInterval(slidePollTimer);
+  slidePollTimer = setInterval(() => { pollSlideInSlideshow(); }, SLIDE_POLL_INTERVAL_MS);
+}
+
+/** Called when edit mode is restored. */
+function onSlideshowExit(): void {
+  slideshowActive = false;
+  logDebug('[Taskpane] Slideshow ended');
+  if (slidePollTimer) {
+    clearInterval(slidePollTimer);
+    slidePollTimer = null;
+  }
+  lastSlideshowSlideId = null;
+  launcher.close();
+}
+
+/** Periodically check view mode to detect slideshow start/end. */
+async function pollViewMode(): Promise<void> {
+  const view = await getActiveView();
+  const isSlideshow = view === 'read';
+
+  if (isSlideshow && !slideshowActive) {
+    await onSlideshowEnter();
+  } else if (!isSlideshow && slideshowActive) {
+    onSlideshowExit();
+  }
+}
+
+/** Start monitoring for slideshow mode. */
+function startViewModePolling(): void {
+  if (viewPollTimer) return;
+  viewPollTimer = setInterval(() => { pollViewMode(); }, VIEW_POLL_INTERVAL_MS);
+  logDebug('[Taskpane] View mode polling started');
+}
+
 // ─── Init ────────────────────────────────────────────────────────────────────
 
 function init(): void {
@@ -655,6 +813,11 @@ function init(): void {
 
   // Dialog closed (user closed window or navigation error) → update UI
   launcher.onClosed(handleViewerClosed);
+
+  // Start polling for slideshow mode.
+  // The commands runtime (FunctionFile) may not persist, so the taskpane
+  // handles auto-open as a reliable fallback.
+  startViewModePolling();
 }
 
 // ─── Bootstrap ───────────────────────────────────────────────────────────────
