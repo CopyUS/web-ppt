@@ -370,6 +370,19 @@ html, body {
   object-fit: contain;
 }
 
+/* ── Standby overlay (slideshow, no URL on current slide) ──────────────── */
+
+.standby-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 150;
+}
+
+.standby-overlay[hidden] {
+  display: none;
+}
+
 /* ── Auto-close countdown ───────────────────────────────────────────────── */
 
 .countdown {
