@@ -1,6 +1,162 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta http-equiv="X-UA-Compatible" content="IE=Edge"/><title>Web.PPT</title><link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png"/><link rel="icon" type="image/png" sizes="16x16" href="assets/icon-16.png"/><script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script><script defer="defer" src="viewer.bundle.js"></script><link href="viewer.css" rel="stylesheet"></head><body><div id="toolbar" role="toolbar" aria-label="Web.PPT controls"><span id="toolbar-url" class="toolbar-url" aria-label="Current URL"></span> <button id="btn-open-browser" class="toolbar-btn" data-i18n="openDirectly">Open directly</button> <button id="btn-close" class="toolbar-btn toolbar-close" aria-label="Close">&#x2715;</button></div><div id="iframe-wrapper"><iframe id="web-frame" title="Web page content" allowfullscreen></iframe></div><div id="image-wrapper" class="image-wrapper" hidden><img id="image-frame" alt="Content"/></div><div id="standby-overlay" class="standby-overlay" hidden aria-live="polite"></div><div id="countdown" class="countdown" hidden aria-live="polite"></div><div id="no-url-message" class="center-message" hidden aria-live="polite"><p class="message-text" data-i18n="noUrlForSlide">No URL configured for this slide</p></div><div id="blocked-overlay" class="center-message" hidden aria-live="assertive"><svg class="blocked-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><p class="blocked-title" data-i18n="iframeBlocked">This site blocks embedding.</p><p class="blocked-hint" data-i18n="iframeBlockedHint">If this is your site, you can fix it in one line.</p><div class="blocked-actions"><button id="btn-navigate-direct" class="btn-primary" data-i18n="openDirectly">Open directly (no frame)</button> <button id="btn-open-external" class="btn-secondary" data-i18n="openInBrowser">Open in browser</button></div><button id="btn-toggle-guide" class="btn-text" data-i18n="showSetupGuide" aria-expanded="false" aria-controls="guide-panel">Show setup guide</button><div id="guide-panel" class="guide-panel" hidden><p class="guide-title" data-i18n="guideTitle">How to allow embedding</p><p class="guide-intro" data-i18n="guideIntro">Add one of these snippets to the server that hosts the linked page:</p><div class="guide-tabs" role="tablist"><button id="vw-tab-nginx" class="guide-tab active" role="tab" aria-selected="true" tabindex="0" aria-controls="vw-panel-nginx" data-tab="nginx">Nginx</button> <button id="vw-tab-apache" class="guide-tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="vw-panel-apache" data-tab="apache">Apache</button> <button id="vw-tab-express" class="guide-tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="vw-panel-express" data-tab="express">Express.js</button></div><div id="vw-panel-nginx" class="guide-code" role="tabpanel" aria-labelledby="vw-tab-nginx" data-tab-panel="nginx"><pre><code>add_header Content-Security-Policy "frame-ancestors *";</code></pre><button class="btn-copy" data-copy-target="nginx" data-i18n="copy">Copy</button></div><div id="vw-panel-apache" class="guide-code" role="tabpanel" aria-labelledby="vw-tab-apache" data-tab-panel="apache" hidden><pre><code>Header set Content-Security-Policy "frame-ancestors *"
-Header unset X-Frame-Options</code></pre><button class="btn-copy" data-copy-target="apache" data-i18n="copy">Copy</button></div><div id="vw-panel-express" class="guide-code" role="tabpanel" aria-labelledby="vw-tab-express" data-tab-panel="express" hidden><pre><code>app.use((req, res, next) =&gt; {
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>Web.PPT</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icon-16.png" />
+    <!--
+      Office.js must load before the bundle so Office.onReady() is available.
+      viewer.css and viewer.bundle.js are injected automatically by HtmlWebpackPlugin.
+    -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script defer src="viewer.bundle.js"></script><link href="viewer.css" rel="stylesheet"></head>
+  <body>
+
+    <!--
+      ── Toolbar ──────────────────────────────────────────────────────────────
+      Hidden above the viewport by default (translateY(-100%)).
+      Revealed (.visible) when the mouse enters the top 40 px trigger zone.
+    -->
+    <div id="toolbar" role="toolbar" aria-label="Web.PPT controls">
+      <span id="toolbar-url" class="toolbar-url" aria-label="Current URL"></span>
+      <button
+        id="btn-open-browser"
+        class="toolbar-btn"
+        data-i18n="openDirectly"
+      >Open directly</button>
+      <button
+        id="btn-close"
+        class="toolbar-btn toolbar-close"
+        aria-label="Close"
+      >&#x2715;</button>
+    </div>
+
+    <!--
+      ── Web frame ────────────────────────────────────────────────────────────
+      src, width, height and CSS transform are applied by viewer.ts.
+    -->
+    <div id="iframe-wrapper">
+      <iframe
+        id="web-frame"
+        title="Web page content"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!--
+      ── Image display ────────────────────────────────────────────────────────
+      Used when URL points to an image file (.png, .jpg, .webp, etc.).
+      Hidden by default; shown by viewer.ts when image mode is detected.
+    -->
+    <div id="image-wrapper" class="image-wrapper" hidden>
+      <img id="image-frame" alt="Content" />
+    </div>
+
+    <!--
+      ── Standby overlay ────────────────────────────────────────────────────────
+      Shown during slideshow when the current slide has no URL configured.
+      The dialog stays open (closing it would exit slideshow), so we show
+      a transparent/dark overlay instead.
+    -->
+    <div id="standby-overlay" class="standby-overlay" hidden aria-live="polite"></div>
+
+    <!--
+      ── Auto-close countdown ─────────────────────────────────────────────────
+      Shown when autoclose > 0 and the page/image has loaded.
+    -->
+    <div id="countdown" class="countdown" hidden aria-live="polite"></div>
+
+    <!--
+      ── No-URL message ───────────────────────────────────────────────────────
+      Shown when the ?url= query parameter is absent.
+    -->
+    <div id="no-url-message" class="center-message" hidden aria-live="polite">
+      <p class="message-text" data-i18n="noUrlForSlide">No URL configured for this slide</p>
+    </div>
+
+    <!--
+      ── Blocked overlay ───────────────────────────────────────────────────────
+      Shown when the target site refuses iframe embedding.
+      Three options: navigate viewer directly, open in system browser,
+      or show server-config guide for own-site owners.
+    -->
+    <div id="blocked-overlay" class="center-message" hidden aria-live="assertive">
+
+      <!-- Lock icon (inline SVG, no external dependency) -->
+      <svg class="blocked-icon" width="48" height="48" viewBox="0 0 24 24"
+           fill="none" stroke="#f0c040" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+
+      <p class="blocked-title" data-i18n="iframeBlocked">This site blocks embedding.</p>
+      <p class="blocked-hint" data-i18n="iframeBlockedHint">
+        If this is your site, you can fix it in one line.
+      </p>
+
+      <!-- Action buttons -->
+      <div class="blocked-actions">
+        <button id="btn-navigate-direct" class="btn-primary" data-i18n="openDirectly">
+          Open directly (no frame)
+        </button>
+        <button id="btn-open-external" class="btn-secondary" data-i18n="openInBrowser">
+          Open in browser
+        </button>
+      </div>
+
+      <!-- Guide toggle -->
+      <button id="btn-toggle-guide" class="btn-text" data-i18n="showSetupGuide"
+              aria-expanded="false" aria-controls="guide-panel">
+        Show setup guide
+      </button>
+
+      <!-- Own-site server config guide (collapsed by default) -->
+      <div id="guide-panel" class="guide-panel" hidden>
+        <p class="guide-title" data-i18n="guideTitle">How to allow embedding</p>
+        <p class="guide-intro" data-i18n="guideIntro">
+          Add one of these snippets to the server that hosts the linked page:
+        </p>
+
+        <!-- Tabs -->
+        <div class="guide-tabs" role="tablist">
+          <button id="vw-tab-nginx" class="guide-tab active" role="tab" aria-selected="true"
+                  tabindex="0" aria-controls="vw-panel-nginx" data-tab="nginx">Nginx</button>
+          <button id="vw-tab-apache" class="guide-tab" role="tab" aria-selected="false"
+                  tabindex="-1" aria-controls="vw-panel-apache" data-tab="apache">Apache</button>
+          <button id="vw-tab-express" class="guide-tab" role="tab" aria-selected="false"
+                  tabindex="-1" aria-controls="vw-panel-express" data-tab="express">Express.js</button>
+        </div>
+
+        <!-- Code panels -->
+        <div id="vw-panel-nginx" class="guide-code" role="tabpanel" aria-labelledby="vw-tab-nginx" data-tab-panel="nginx">
+          <pre><code>add_header Content-Security-Policy "frame-ancestors *";</code></pre>
+          <button class="btn-copy" data-copy-target="nginx" data-i18n="copy">Copy</button>
+        </div>
+
+        <div id="vw-panel-apache" class="guide-code" role="tabpanel" aria-labelledby="vw-tab-apache" data-tab-panel="apache" hidden>
+          <pre><code>Header set Content-Security-Policy "frame-ancestors *"
+Header unset X-Frame-Options</code></pre>
+          <button class="btn-copy" data-copy-target="apache" data-i18n="copy">Copy</button>
+        </div>
+
+        <div id="vw-panel-express" class="guide-code" role="tabpanel" aria-labelledby="vw-tab-express" data-tab-panel="express" hidden>
+          <pre><code>app.use((req, res, next) =&gt; {
   res.setHeader('Content-Security-Policy', 'frame-ancestors *');
   res.removeHeader('X-Frame-Options');
   next();
-});</code></pre><button class="btn-copy" data-copy-target="express" data-i18n="copy">Copy</button></div><p class="guide-note" data-i18n="guideNote">Restart your server and reload the slide after making changes.</p></div></div></body></html>
+});</code></pre>
+          <button class="btn-copy" data-copy-target="express" data-i18n="copy">Copy</button>
+        </div>
+
+        <p class="guide-note" data-i18n="guideNote">
+          Restart your server and reload the slide after making changes.
+        </p>
+      </div>
+    </div>
+
+  </body>
+</html>

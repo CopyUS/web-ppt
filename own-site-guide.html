@@ -1,7 +1,101 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta http-equiv="X-UA-Compatible" content="IE=Edge"/><title>Web.PPT — Setup Guide</title><link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png"/><link rel="icon" type="image/png" sizes="16x16" href="assets/icon-16.png"/><script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script><script defer="defer" src="help.bundle.js"></script><link href="help.css" rel="stylesheet"></head><body><div id="app"><header class="guide-header"><h1 data-i18n="guideTitle">How to allow embedding</h1><select id="lang-select" class="lang-select" aria-label="Language"><option value="en">English</option><option value="zh">中文</option><option value="es">Español</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="it">Italiano</option><option value="ar">العربية</option><option value="pt">Português</option><option value="hi">हिन्दी</option><option value="ru">Русский</option></select></header><p class="guide-intro" data-i18n="guideIntro">Add one of these snippets to your server config:</p><div class="guide-tabs" role="tablist"><button id="hp-tab-nginx" class="guide-tab guide-tab--active" role="tab" aria-selected="true" tabindex="0" aria-controls="hp-panel-nginx" data-guide-tab="nginx">Nginx</button> <button id="hp-tab-apache" class="guide-tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="hp-panel-apache" data-guide-tab="apache">Apache</button> <button id="hp-tab-express" class="guide-tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="hp-panel-express" data-guide-tab="express">Express.js</button> <button id="hp-tab-meta" class="guide-tab" role="tab" aria-selected="false" tabindex="-1" aria-controls="hp-panel-meta" data-guide-tab="meta">HTML meta</button></div><div id="hp-panel-nginx" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-nginx" data-guide-panel="nginx"><pre class="guide-code"><code>add_header Content-Security-Policy "frame-ancestors *";</code></pre><button class="btn-copy" data-copy-snippet="nginx" data-i18n="copy">Copy</button></div><div id="hp-panel-apache" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-apache" data-guide-panel="apache" hidden><pre class="guide-code"><code>Header set Content-Security-Policy "frame-ancestors *"
-Header unset X-Frame-Options</code></pre><button class="btn-copy" data-copy-snippet="apache" data-i18n="copy">Copy</button></div><div id="hp-panel-express" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-express" data-guide-panel="express" hidden><pre class="guide-code"><code>app.use((req, res, next) =&gt; {
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>Web.PPT — Setup Guide</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icon-16.png" />
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script defer src="help.bundle.js"></script><link href="help.css" rel="stylesheet"></head>
+  <body>
+    <div id="app">
+
+      <header class="guide-header">
+        <h1 data-i18n="guideTitle">How to allow embedding</h1>
+        <select id="lang-select" class="lang-select" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="es">Español</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="it">Italiano</option>
+          <option value="ar">العربية</option>
+          <option value="pt">Português</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ru">Русский</option>
+        </select>
+      </header>
+
+      <p class="guide-intro" data-i18n="guideIntro">
+        Add one of these snippets to your server config:
+      </p>
+
+      <!-- Tabs -->
+      <div class="guide-tabs" role="tablist">
+        <button id="hp-tab-nginx" class="guide-tab guide-tab--active" role="tab" aria-selected="true"
+                tabindex="0" aria-controls="hp-panel-nginx" data-guide-tab="nginx">Nginx</button>
+        <button id="hp-tab-apache" class="guide-tab" role="tab" aria-selected="false"
+                tabindex="-1" aria-controls="hp-panel-apache" data-guide-tab="apache">Apache</button>
+        <button id="hp-tab-express" class="guide-tab" role="tab" aria-selected="false"
+                tabindex="-1" aria-controls="hp-panel-express" data-guide-tab="express">Express.js</button>
+        <button id="hp-tab-meta" class="guide-tab" role="tab" aria-selected="false"
+                tabindex="-1" aria-controls="hp-panel-meta" data-guide-tab="meta">HTML meta</button>
+      </div>
+
+      <!-- Code panels -->
+      <div id="hp-panel-nginx" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-nginx" data-guide-panel="nginx">
+        <pre class="guide-code"><code>add_header Content-Security-Policy "frame-ancestors *";</code></pre>
+        <button class="btn-copy" data-copy-snippet="nginx" data-i18n="copy">Copy</button>
+      </div>
+
+      <div id="hp-panel-apache" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-apache" data-guide-panel="apache" hidden>
+        <pre class="guide-code"><code>Header set Content-Security-Policy "frame-ancestors *"
+Header unset X-Frame-Options</code></pre>
+        <button class="btn-copy" data-copy-snippet="apache" data-i18n="copy">Copy</button>
+      </div>
+
+      <div id="hp-panel-express" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-express" data-guide-panel="express" hidden>
+        <pre class="guide-code"><code>app.use((req, res, next) =&gt; {
   res.setHeader('Content-Security-Policy', 'frame-ancestors *');
   res.removeHeader('X-Frame-Options');
   next();
-});</code></pre><button class="btn-copy" data-copy-snippet="express" data-i18n="copy">Copy</button></div><div id="hp-panel-meta" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-meta" data-guide-panel="meta" hidden><pre class="guide-code"><code>&lt;meta http-equiv="Content-Security-Policy"
-      content="frame-ancestors *"&gt;</code></pre><button class="btn-copy" data-copy-snippet="meta" data-i18n="copy">Copy</button><p class="guide-meta-note" data-i18n="guideMetaNote">Note: frame-ancestors in a meta tag may be ignored if the server already sets X-Frame-Options headers.</p></div><p class="guide-note" data-i18n="guideNote">Restart your server and reload the slide after making changes.</p><h2 class="faq-title" data-i18n="guideFaqTitle">FAQ</h2><details class="faq-item"><summary data-i18n="guideFaqXFrameQ">What is X-Frame-Options?</summary><p data-i18n="guideFaqXFrameA">An HTTP header that controls whether your site can be shown inside an iframe.</p></details><details class="faq-item"><summary data-i18n="guideFaqUnknownServerQ">I don't know which server I have</summary><p data-i18n="guideFaqUnknownServerA">Check your project files...</p></details><details class="faq-item"><summary data-i18n="guideFaqNoAccessQ">I don't have server access</summary><p data-i18n="guideFaqNoAccessA">Use the "Open directly" button in the viewer.</p></details></div></body></html>
+});</code></pre>
+        <button class="btn-copy" data-copy-snippet="express" data-i18n="copy">Copy</button>
+      </div>
+
+      <div id="hp-panel-meta" class="guide-code-panel" role="tabpanel" aria-labelledby="hp-tab-meta" data-guide-panel="meta" hidden>
+        <pre class="guide-code"><code>&lt;meta http-equiv="Content-Security-Policy"
+      content="frame-ancestors *"&gt;</code></pre>
+        <button class="btn-copy" data-copy-snippet="meta" data-i18n="copy">Copy</button>
+        <p class="guide-meta-note" data-i18n="guideMetaNote">
+          Note: frame-ancestors in a meta tag may be ignored if the server already sets X-Frame-Options headers.
+        </p>
+      </div>
+
+      <p class="guide-note" data-i18n="guideNote">
+        Restart your server and reload the slide after making changes.
+      </p>
+
+      <!-- FAQ -->
+      <h2 class="faq-title" data-i18n="guideFaqTitle">FAQ</h2>
+
+      <details class="faq-item">
+        <summary data-i18n="guideFaqXFrameQ">What is X-Frame-Options?</summary>
+        <p data-i18n="guideFaqXFrameA">An HTTP header that controls whether your site can be shown inside an iframe.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="guideFaqUnknownServerQ">I don't know which server I have</summary>
+        <p data-i18n="guideFaqUnknownServerA">Check your project files...</p>
+      </details>
+
+      <details class="faq-item">
+        <summary data-i18n="guideFaqNoAccessQ">I don't have server access</summary>
+        <p data-i18n="guideFaqNoAccessA">Use the "Open directly" button in the viewer.</p>
+      </details>
+
+    </div>
+  </body>
+</html>
