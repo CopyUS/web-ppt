@@ -64,22 +64,6 @@
                   </Action>
                 </Control>
 
-                <Control xsi:type="Button" id="ShowWebPageButton">
-                  <Label resid="ShowButton.Label" />
-                  <Supertip>
-                    <Title resid="ShowButton.SupertipTitle" />
-                    <Description resid="ShowButton.SupertipDesc" />
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="Icon.16x16" />
-                    <bt:Image size="32" resid="Icon.32x32" />
-                    <bt:Image size="80" resid="Icon.80x80" />
-                  </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>showWebPage</FunctionName>
-                  </Action>
-                </Control>
-
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -100,16 +84,13 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Group.Label" DefaultValue="Web.PPT" />
-        <bt:String id="InsertButton.Label" DefaultValue="Add WebPage.PPT" />
-        <bt:String id="InsertButton.SupertipTitle" DefaultValue="Add WebPage.PPT" />
-        <bt:String id="ShowButton.Label" DefaultValue="Show WebPage.PPT" />
-        <bt:String id="ShowButton.SupertipTitle" DefaultValue="Show Web Page" />
+        <bt:String id="InsertButton.Label" DefaultValue="Web.PPT" />
+        <bt:String id="InsertButton.SupertipTitle" DefaultValue="Web.PPT" />
         <bt:String id="GetStarted.Title" DefaultValue="Web.PPT Add-in" />
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="InsertButton.SupertipDesc" DefaultValue="Open the Web.PPT panel to set a URL for the current slide." />
-        <bt:String id="ShowButton.SupertipDesc" DefaultValue="Open the configured web page for the current slide in a browser window." />
-        <bt:String id="GetStarted.Description" DefaultValue="Click Add WebPage.PPT to set a URL, then Show WebPage.PPT to display it." />
+        <bt:String id="InsertButton.SupertipDesc" DefaultValue="Open Web.PPT panel to configure a web page for the current slide." />
+        <bt:String id="GetStarted.Description" DefaultValue="Click Web.PPT to open the panel and configure a web page for the current slide." />
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
