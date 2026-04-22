@@ -97,32 +97,17 @@
                     {
                       "id": "InsertWebPageButton",
                       "type": "button",
-                      "label": "Add WebPage.PPT",
+                      "label": "Web.PPT",
                       "icons": [
                         { "size": 16, "url": "https://localhost:4008/assets/icon-16.png" },
                         { "size": 32, "url": "https://localhost:4008/assets/icon-32.png" },
                         { "size": 80, "url": "https://localhost:4008/assets/icon-80.png" }
                       ],
                       "supertip": {
-                        "title": "Add WebPage.PPT",
-                        "description": "Open the Web.PPT panel to set a URL for the current slide."
+                        "title": "Web.PPT",
+                        "description": "Open Web.PPT panel to configure a web page for the current slide."
                       },
                       "actionId": "OpenTaskPane"
-                    },
-                    {
-                      "id": "ShowWebPageButton",
-                      "type": "button",
-                      "label": "Show WebPage.PPT",
-                      "icons": [
-                        { "size": 16, "url": "https://localhost:4008/assets/icon-16.png" },
-                        { "size": 32, "url": "https://localhost:4008/assets/icon-32.png" },
-                        { "size": 80, "url": "https://localhost:4008/assets/icon-80.png" }
-                      ],
-                      "supertip": {
-                        "title": "Show Web Page",
-                        "description": "Open the configured web page for the current slide in a browser window. Set up the URL first using the Add WebPage.PPT button."
-                      },
-                      "actionId": "ShowWebPage"
                     }
                   ]
                 }
