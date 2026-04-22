@@ -130,7 +130,7 @@
           <label class="label" data-i18n="autoOpenDelay">Open after</label>
         </div>
         <div class="slider-row">
-          <input id="slider-autoopendelay" type="range" class="range-input" min="0" max="17" value="0" />
+          <input id="slider-autoopendelay" type="range" class="range-input" min="0" max="32" value="0" />
           <span id="slider-autoopendelay-value" class="slider-value" data-i18n="autoOpenDelayImmediate">0s</span>
         </div>
       </div>
@@ -169,6 +169,17 @@
           <span id="viewer-status-icon" class="viewer-status-icon" aria-hidden="true"></span>
           <span id="viewer-status-text" class="viewer-status-text"></span>
         </div>
+      </div>
+
+      <!-- ── How to use ─────────────────────────────────────────────────── -->
+      <div class="section">
+        <button id="btn-howto-toggle" class="btn-link" data-i18n="howToUse"
+                aria-expanded="false" aria-controls="howto-section">
+          How to use
+        </button>
+      </div>
+      <div id="howto-section" class="hint-block" hidden>
+        <p id="howto-content" data-i18n="howToUseHint" style="white-space: pre-line; margin: 0;"></p>
       </div>
 
       <!-- ── Guide link ──────────────────────────────────────────────────── -->
@@ -263,25 +274,6 @@ Header unset X-Frame-Options</code></pre>
           <p data-i18n="guideFaqNoAccessA">Use the "Open directly" button in the viewer.</p>
         </details>
 
-      </div>
-
-      <!-- ── Debug panel (temporary) ──────────────────────────────────── -->
-      <div style="margin:12px 16px;padding:10px;background:#1a1a2e;border-radius:4px;">
-        <div style="color:#aaa;font-size:11px;margin-bottom:8px;font-family:monospace;">DEBUG: Hide dialog tests</div>
-        <div style="display:flex;flex-direction:column;gap:6px;">
-          <label style="color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;">
-            <input id="dbg-chk-move" type="checkbox" /> moveTo(-32000, -32000)
-          </label>
-          <label style="color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;">
-            <input id="dbg-chk-resize" type="checkbox" /> resizeTo(1, 1)
-          </label>
-          <button id="dbg-btn-restore" type="button" style="padding:4px 10px;background:#555;color:#fff;border:none;border-radius:3px;font-size:11px;cursor:pointer;align-self:flex-start;">
-            Restore window
-          </button>
-        </div>
-        <div id="dbg-result" style="color:#0f0;font-size:11px;font-family:monospace;margin-top:6px;min-height:14px;"></div>
-      </div>
-      <div id="debug-panel" style="margin:4px 16px 12px;padding:8px;background:#1a1a2e;color:#0f0;font-family:monospace;font-size:11px;border-radius:4px;max-height:200px;overflow-y:auto;white-space:pre-wrap;">DEBUG LOG:
       </div>
 
       <!-- ── Footer ──────────────────────────────────────────────────────── -->
